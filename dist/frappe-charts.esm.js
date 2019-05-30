@@ -1375,7 +1375,7 @@ class BaseChart {
 		this.realData = this.prepareData(options.data);
 		this.data = this.prepareFirstData(this.realData);
 
-		this.colors = this.validateColors(options.colors, this.type);
+		this.colors = this.validateColors(options.colors, this.type, this.realData.datasets);
 
 		this.config = {
 			showTooltip: 1, // calculate
@@ -1411,8 +1411,10 @@ class BaseChart {
 		return data;
 	}
 
-	validateColors(colors, type) {
-		const validColors = [];
+	validateColors(colors, type, datasets) {
+		let validColors = [];
+
+		// use colors defined in chart options
 		colors = (colors || []).concat(DEFAULT_COLORS[type]);
 		colors.forEach((string) => {
 			const color = getColor(string);
@@ -1422,6 +1424,10 @@ class BaseChart {
 				validColors.push(color);
 			}
 		});
+
+		// then use dataset colors, if defined
+		datasets.forEach((d, i) => { validColors[i] = d.color ? d.color : validColors[i];});
+		
 		return validColors;
 	}
 
