@@ -690,6 +690,7 @@ function makeVertLine(x, label, y1, y2, options={}) {
 	});
 
 	let text = createSVG('text', {
+		className: 'x-axis-label',
 		x: 0,
 		y: y1 > y2 ? y1 + LABEL_MARGIN : y1 - LABEL_MARGIN - FONT_SIZE,
 		dy: FONT_SIZE + 'px',
@@ -726,6 +727,7 @@ function makeHoriLine(y, label, x1, x2, options={}) {
 	});
 
 	let text = createSVG('text', {
+		className: 'y-axis-label',
 		x: x1 < x2 ? x1 - LABEL_MARGIN : x1 + LABEL_MARGIN,
 		y: 0,
 		dy: (FONT_SIZE / 2 - 2) + 'px',
