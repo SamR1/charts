@@ -379,15 +379,18 @@ let componentConfigs = {
 
 			this.units = [];
 			if(!c.hideDots) {
-				this.units = data.yPositions.map((y, j) => {
-					return datasetDot(
-						data.xPositions[j],
-						y,
-						data.radius,
-						c.color,
-						(c.valuesOverPoints ? data.values[j] : ''),
-						j
-					);
+				data.yPositions.map((y, j) => {
+					if (y) {
+						const dot = datasetDot(
+							data.xPositions[j],
+							y,
+							data.radius,
+							c.color,
+							(c.valuesOverPoints ? data.values[j] : ''),
+							j
+						);
+						this.units.push(dot);
+					}
 				});
 			}
 

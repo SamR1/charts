@@ -80,7 +80,7 @@ export default class BaseChart {
 
 		// then use dataset colors, if defined
 		datasets.forEach((d, i) => { validColors[i] = d.color ? d.color : validColors[i];});
-		
+
 		return validColors;
 	}
 

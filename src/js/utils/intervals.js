@@ -79,6 +79,11 @@ export function calcChartIntervals(values, withMinimum=false) {
 	// Calculates best-fit y intervals from given values
 	// and returns the interval array
 
+	// remove null values if withMinimum is true (line chart)
+	if (withMinimum) {
+		values = values.filter(x => x);
+	}
+
 	let maxValue = Math.max(...values);
 	let minValue = Math.min(...values);
 

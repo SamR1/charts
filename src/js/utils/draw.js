@@ -547,7 +547,12 @@ export function datasetDot(x, y, radius, color, label='', index=0) {
 }
 
 export function getPaths(xList, yList, color, options={}, meta={}) {
-	let pointsList = yList.map((y, i) => (xList[i] + ',' + y));
+	let pointsList = [];
+	yList.map((y, i) => {
+		if (y) {
+			pointsList.push(xList[i] + ',' + y);
+		}
+	});
 	let pointsStr = pointsList.join("L");
 	let path = makePath("M"+pointsStr, 'line-graph-path', color);
 

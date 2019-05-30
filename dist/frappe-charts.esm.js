@@ -966,7 +966,12 @@ function datasetDot(x, y, radius, color, label='', index=0) {
 }
 
 function getPaths(xList, yList, color, options={}, meta={}) {
-	let pointsList = yList.map((y, i) => (xList[i] + ',' + y));
+	let pointsList = [];
+	yList.map((y, i) => {
+		if (y) {
+			pointsList.push(xList[i] + ',' + y);
+		}
+	});
 	let pointsStr = pointsList.join("L");
 	let path = makePath("M"+pointsStr, 'line-graph-path', color);
 
@@ -1427,7 +1432,7 @@ class BaseChart {
 
 		// then use dataset colors, if defined
 		datasets.forEach((d, i) => { validColors[i] = d.color ? d.color : validColors[i];});
-		
+
 		return validColors;
 	}
 
@@ -2206,15 +2211,18 @@ let componentConfigs = {
 
 			this.units = [];
 			if(!c.hideDots) {
-				this.units = data.yPositions.map((y, j) => {
-					return datasetDot(
-						data.xPositions[j],
-						y,
-						data.radius,
-						c.color,
-						(c.valuesOverPoints ? data.values[j] : ''),
-						j
-					);
+				data.yPositions.map((y, j) => {
+					if (y) {
+						const dot = datasetDot(
+							data.xPositions[j],
+							y,
+							data.radius,
+							c.color,
+							(c.valuesOverPoints ? data.values[j] : ''),
+							j
+						);
+						this.units.push(dot);
+					}
 				});
 			}
 
@@ -2583,6 +2591,11 @@ function calcChartIntervals(values, withMinimum=false) {
 
 	// Calculates best-fit y intervals from given values
 	// and returns the interval array
+
+	// remove null values if withMinimum is true (line chart)
+	if (withMinimum) {
+		values = values.filter(x => x);
+	}
 
 	let maxValue = Math.max(...values);
 	let minValue = Math.min(...values);
@@ -3231,7 +3244,7 @@ class AxisChart extends BaseChart {
 
 	calcDatasetPoints() {
 		let s = this.state;
-		let scaleAll = values => values.map(val => scale(val, s.yAxis));
+		let scaleAll = values => values.map(val => val ? scale(val, s.yAxis) : null);
 
 		s.datasets = this.data.datasets.map((d, i) => {
 			let values = d.values;
@@ -3259,7 +3272,7 @@ class AxisChart extends BaseChart {
 		s.yExtremes = new Array(s.datasetLength).fill(9999);
 		s.datasets.map(d => {
 			d.yPositions.map((pos, j) => {
-				if(pos < s.yExtremes[j]) {
+				if(pos && pos < s.yExtremes[j]) {
 					s.yExtremes[j] = pos;
 				}
 			});
@@ -3396,7 +3409,7 @@ class AxisChart extends BaseChart {
 
 					let offsets = new Array(s.datasetLength).fill(0);
 					if(stacked) {
-						offsets = d.yPositions.map((y, j) => y - d.cumulativeYPos[j]);
+						offsets = d.yPositions.map((y, j) => y ? y - d.cumulativeYPos[j] : 0);
 					}
 
 					return {
@@ -3485,7 +3498,6 @@ class AxisChart extends BaseChart {
 		let formatX = this.config.formatTooltipX;
 		let formatY = this.config.formatTooltipY;
 		let titles = s.xAxis.labels;
-
 		titles.map((label, index) => {
 			let values = this.state.datasets.map((set, i) => {
 				let value = set.values[index];
@@ -3531,6 +3543,11 @@ class AxisChart extends BaseChart {
 
 		let index = getClosestInArray(relX, s.xAxis.positions, true);
 		let dbi = this.dataByIndex[index];
+
+		// display tooltip only if all values are not null
+		if (dbi.values.filter(v => v.value).length === 0) {
+			return;
+		}
 
 		this.tip.setValues(
 			dbi.xPos + this.tip.offset.x,
