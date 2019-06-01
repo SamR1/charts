@@ -318,7 +318,7 @@ function makeHoriLine(y, label, x1, x2, options={}) {
 	});
 
 	let line = createSVG('g', {
-		transform: `translate(0, ${y})`,
+		transform: `translate(0, ${y ? y : 0})`,
 		'stroke-opacity': 1
 	});
 
