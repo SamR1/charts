@@ -2625,6 +2625,11 @@ function calcChartIntervals(values, withMinimum=false) {
 			intervals = getChartIntervals(maxValue);
 		} else {
 			intervals = getChartIntervals(maxValue, minValue);
+			if (minValue !== 0) {
+				// hack to adapt y axis when the minValue is different from 0
+				intervals.unshift(intervals[0] - (intervals[1] - intervals[0]));
+				intervals.pop();
+			}
 		}
 	}
 
@@ -2665,6 +2670,11 @@ function calcChartIntervals(values, withMinimum=false) {
 			intervals = getChartIntervals(pseudoMaxValue);
 		} else {
 			intervals = getChartIntervals(pseudoMaxValue, pseudoMinValue);
+			if (maxValue !== 0) {
+				// hack to adapt y axis when the minValue is different from 0
+				intervals.unshift(intervals[0] - (intervals[1] - intervals[0]));
+				intervals.pop();
+			}
 		}
 
 		intervals = intervals.reverse().map(d => d * (-1));
