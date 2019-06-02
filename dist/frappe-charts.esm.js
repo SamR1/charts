@@ -1236,34 +1236,35 @@ function animateSVGElement(element, props, dur, easingType="linear", type=undefi
 		}
 		let currentValue = oldValues[attributeName] || element.getAttribute(attributeName);
 		let value = props[attributeName];
+		if (value) {
+			let animAttr = {
+				attributeName: attributeName,
+				from: currentValue,
+				to: value,
+				begin: "0s",
+				dur: dur/1000 + "s",
+				values: currentValue + ";" + value,
+				keySplines: EASING[easingType],
+				keyTimes: "0;1",
+				calcMode: "spline",
+				fill: 'freeze'
+			};
 
-		let animAttr = {
-			attributeName: attributeName,
-			from: currentValue,
-			to: value,
-			begin: "0s",
-			dur: dur/1000 + "s",
-			values: currentValue + ";" + value,
-			keySplines: EASING[easingType],
-			keyTimes: "0;1",
-			calcMode: "spline",
-			fill: 'freeze'
-		};
+			if(type) {
+				animAttr["type"] = type;
+			}
 
-		if(type) {
-			animAttr["type"] = type;
-		}
+			for (var i in animAttr) {
+				animateElement.setAttribute(i, animAttr[i]);
+			}
 
-		for (var i in animAttr) {
-			animateElement.setAttribute(i, animAttr[i]);
-		}
+			animElement.appendChild(animateElement);
 
-		animElement.appendChild(animateElement);
-
-		if(type) {
-			newElement.setAttribute(attributeName, `translate(${value})`);
-		} else {
-			newElement.setAttribute(attributeName, value);
+			if(type) {
+				newElement.setAttribute(attributeName, `translate(${value})`);
+			} else {
+				newElement.setAttribute(attributeName, value);
+			}
 		}
 	}
 
