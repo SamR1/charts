@@ -81,7 +81,7 @@ export function calcChartIntervals(values, withMinimum=false) {
 
 	// remove null values if withMinimum is true (line chart)
 	if (withMinimum) {
-		values = values.filter(x => x);
+		values = values.filter(x => typeof x !== "undefined" && x !== null);
 	}
 
 	let maxValue = Math.max(...values);

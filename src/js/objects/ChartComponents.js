@@ -380,7 +380,7 @@ let componentConfigs = {
 			this.units = [];
 			if(!c.hideDots) {
 				data.yPositions.map((y, j) => {
-					if (y) {
+					if (typeof y !== "undefined" && y !== null) {
 						const dot = datasetDot(
 							data.xPositions[j],
 							y,

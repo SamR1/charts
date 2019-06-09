@@ -549,7 +549,7 @@ export function datasetDot(x, y, radius, color, label='', index=0) {
 export function getPaths(xList, yList, color, options={}, meta={}) {
 	let pointsList = [];
 	yList.map((y, i) => {
-		if (y) {
+		if (typeof y !== "undefined" && y !== null) {
 			pointsList.push(xList[i] + ',' + y);
 		}
 	});

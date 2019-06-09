@@ -968,7 +968,7 @@ function datasetDot(x, y, radius, color, label='', index=0) {
 function getPaths(xList, yList, color, options={}, meta={}) {
 	let pointsList = [];
 	yList.map((y, i) => {
-		if (y) {
+		if (typeof y !== "undefined" && y !== null) {
 			pointsList.push(xList[i] + ',' + y);
 		}
 	});
@@ -2213,7 +2213,7 @@ let componentConfigs = {
 			this.units = [];
 			if(!c.hideDots) {
 				data.yPositions.map((y, j) => {
-					if (y) {
+					if (typeof y !== "undefined" && y !== null) {
 						const dot = datasetDot(
 							data.xPositions[j],
 							y,
@@ -2595,7 +2595,7 @@ function calcChartIntervals(values, withMinimum=false) {
 
 	// remove null values if withMinimum is true (line chart)
 	if (withMinimum) {
-		values = values.filter(x => x);
+		values = values.filter(x => typeof x !== "undefined" && x !== null);
 	}
 
 	let maxValue = Math.max(...values);
@@ -3255,7 +3255,9 @@ class AxisChart extends BaseChart {
 
 	calcDatasetPoints() {
 		let s = this.state;
-		let scaleAll = values => values.map(val => val ? scale(val, s.yAxis) : null);
+		let scaleAll = values => values.map(val => (typeof val !== "undefined" && val !== null)
+			? scale(val, s.yAxis)
+			: null);
 
 		s.datasets = this.data.datasets.map((d, i) => {
 			let values = d.values;
@@ -3283,7 +3285,7 @@ class AxisChart extends BaseChart {
 		s.yExtremes = new Array(s.datasetLength).fill(9999);
 		s.datasets.map(d => {
 			d.yPositions.map((pos, j) => {
-				if(pos && pos < s.yExtremes[j]) {
+				if(typeof pos !== "undefined" && pos !== null && pos < s.yExtremes[j]) {
 					s.yExtremes[j] = pos;
 				}
 			});
@@ -3420,7 +3422,7 @@ class AxisChart extends BaseChart {
 
 					let offsets = new Array(s.datasetLength).fill(0);
 					if(stacked) {
-						offsets = d.yPositions.map((y, j) => y ? y - d.cumulativeYPos[j] : 0);
+						offsets = d.yPositions.map((y, j) => typeof y !== "undefined" && y !== null ? y - d.cumulativeYPos[j] : 0);
 					}
 
 					return {
@@ -3556,7 +3558,7 @@ class AxisChart extends BaseChart {
 		let dbi = this.dataByIndex[index];
 
 		// display tooltip only if all values are not null
-		if (dbi.values.filter(v => v.value).length === 0) {
+		if (dbi.values.filter(v =>  typeof v.value !== "undefined" && v.value !== null).length === 0) {
 			return;
 		}
 

@@ -103,7 +103,9 @@ export default class AxisChart extends BaseChart {
 
 	calcDatasetPoints() {
 		let s = this.state;
-		let scaleAll = values => values.map(val => val ? scale(val, s.yAxis) : null);
+		let scaleAll = values => values.map(val => (typeof val !== "undefined" && val !== null)
+			? scale(val, s.yAxis)
+			: null);
 
 		s.datasets = this.data.datasets.map((d, i) => {
 			let values = d.values;
@@ -131,7 +133,7 @@ export default class AxisChart extends BaseChart {
 		s.yExtremes = new Array(s.datasetLength).fill(9999);
 		s.datasets.map(d => {
 			d.yPositions.map((pos, j) => {
-				if(pos && pos < s.yExtremes[j]) {
+				if(typeof pos !== "undefined" && pos !== null && pos < s.yExtremes[j]) {
 					s.yExtremes[j] = pos;
 				}
 			});
@@ -268,7 +270,7 @@ export default class AxisChart extends BaseChart {
 
 					let offsets = new Array(s.datasetLength).fill(0);
 					if(stacked) {
-						offsets = d.yPositions.map((y, j) => y ? y - d.cumulativeYPos[j] : 0);
+						offsets = d.yPositions.map((y, j) => typeof y !== "undefined" && y !== null ? y - d.cumulativeYPos[j] : 0);
 					}
 
 					return {
@@ -404,7 +406,7 @@ export default class AxisChart extends BaseChart {
 		let dbi = this.dataByIndex[index];
 
 		// display tooltip only if all values are not null
-		if (dbi.values.filter(v => v.value).length === 0) {
+		if (dbi.values.filter(v =>  typeof v.value !== "undefined" && v.value !== null).length === 0) {
 			return;
 		}
 
