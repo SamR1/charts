@@ -889,9 +889,14 @@ function datasetBar(x, yTop, width, color, label='', index=0, offset=0, meta={})
 		y -= meta.minHeight;
 	}
 
+	let style = `fill: ${color}`;
+	if (typeof yTop === "undefined" || yTop === null ) {
+		style += '; display: none';
+	}
+
 	let rect = createSVG('rect', {
 		className: `bar mini`,
-		style: `fill: ${color}`,
+		style: style,
 		'data-point-index': index,
 		x: x,
 		y: y,
@@ -3098,7 +3103,7 @@ function dataPrep(data, type) {
 
 function zeroDataPrep(realData) {
 	let datasetLength = realData.labels.length;
-	let zeroArray = new Array(datasetLength).fill(0);
+	let zeroArray = new Array(datasetLength).fill(null);
 
 	let zeroData = {
 		labels: realData.labels.slice(0, -1),

@@ -61,7 +61,7 @@ export function dataPrep(data, type) {
 
 export function zeroDataPrep(realData) {
 	let datasetLength = realData.labels.length;
-	let zeroArray = new Array(datasetLength).fill(0);
+	let zeroArray = new Array(datasetLength).fill(null);
 
 	let zeroData = {
 		labels: realData.labels.slice(0, -1),

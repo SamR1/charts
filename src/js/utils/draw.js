@@ -470,9 +470,14 @@ export function datasetBar(x, yTop, width, color, label='', index=0, offset=0, m
 		y -= meta.minHeight;
 	}
 
+	let style = `fill: ${color}`;
+	if (typeof yTop === "undefined" || yTop === null ) {
+		style += '; display: none';
+	}
+
 	let rect = createSVG('rect', {
 		className: `bar mini`,
-		style: `fill: ${color}`,
+		style: style,
 		'data-point-index': index,
 		x: x,
 		y: y,
