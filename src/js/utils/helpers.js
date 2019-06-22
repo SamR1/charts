@@ -3,9 +3,10 @@ import { ANGLE_RATIO } from './constants';
 /**
  * Returns the value of a number upto 2 decimal places.
  * @param {Number} d Any number
+ * @param {Number} decimals Number of decimals
  */
-export function floatTwo(d) {
-	return parseFloat(d.toFixed(2));
+export function floatTwo(d, decimals=2) {
+	return parseFloat(d.toFixed(decimals));
 }
 
 /**

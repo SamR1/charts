@@ -24,9 +24,12 @@ function normalize(x) {
 }
 
 function getChartRangeIntervals(max, min=0) {
-	let upperBound = Math.ceil(max);
-	let lowerBound = Math.floor(min);
-	let range = upperBound - lowerBound;
+	let upperBound = floatTwo((Math.ceil(max) === max
+		? max + 0.1
+		: Math.ceil(max)),1
+	);
+	let lowerBound = min < 1 ? 0 : floatTwo(min - 0.1, 1);
+	let range = floatTwo(upperBound - lowerBound, 1);
 
 	let noOfParts = range;
 	let partSize = 1;
@@ -56,7 +59,7 @@ function getChartRangeIntervals(max, min=0) {
 
 	let intervals = [];
 	for(var i = 0; i <= noOfParts; i++){
-		intervals.push(lowerBound + partSize * i);
+		intervals.push(floatTwo(lowerBound + partSize * i));
 	}
 	return intervals;
 }
@@ -112,11 +115,6 @@ export function calcChartIntervals(values, withMinimum=false) {
 			intervals = getChartIntervals(maxValue);
 		} else {
 			intervals = getChartIntervals(maxValue, minValue);
-			if (minValue !== 0) {
-				// hack to adapt y axis when the minValue is different from 0
-				intervals.unshift(intervals[0] - (intervals[1] - intervals[0]));
-				intervals.pop();
-			}
 		}
 	}
 
@@ -157,11 +155,6 @@ export function calcChartIntervals(values, withMinimum=false) {
 			intervals = getChartIntervals(pseudoMaxValue);
 		} else {
 			intervals = getChartIntervals(pseudoMaxValue, pseudoMinValue);
-			if (maxValue !== 0) {
-				// hack to adapt y axis when the minValue is different from 0
-				intervals.unshift(intervals[0] - (intervals[1] - intervals[0]));
-				intervals.pop();
-			}
 		}
 
 		intervals = intervals.reverse().map(d => d * (-1));
