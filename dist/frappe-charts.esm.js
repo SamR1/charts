@@ -2592,7 +2592,9 @@ function getChartIntervals(maxValue, minValue=0) {
 	normalMaxValue = normalMaxValue.toFixed(6);
 
 	let intervals = getChartRangeIntervals(normalMaxValue, normalMinValue);
-	intervals = intervals.map(value => value * Math.pow(10, exponent));
+	intervals = intervals.map(
+		value => floatToFixed(value * Math.pow(10, exponent))
+	);
 	return intervals;
 }
 
