@@ -1,4 +1,4 @@
-import { floatTwo } from './helpers';
+import { floatToFixed } from './helpers';
 
 function normalize(x) {
 	// Calculates mantissa and exponent of a number
@@ -24,12 +24,12 @@ function normalize(x) {
 }
 
 function getChartRangeIntervals(max, min=0) {
-	let upperBound = floatTwo((Math.ceil(max) === max
+	let upperBound = floatToFixed((Math.ceil(max) === max
 		? max + 0.1
 		: Math.ceil(max)),1
 	);
-	let lowerBound = min < 1 ? 0 : floatTwo(min - 0.1, 1);
-	let range = floatTwo(upperBound - lowerBound, 1);
+	let lowerBound = min < 1 ? 0 : floatToFixed(min - 0.1, 1);
+	let range = floatToFixed(upperBound - lowerBound, 1);
 
 	let noOfParts = range;
 	let partSize = 1;
@@ -59,7 +59,7 @@ function getChartRangeIntervals(max, min=0) {
 
 	let intervals = [];
 	for(var i = 0; i <= noOfParts; i++){
-		intervals.push(floatTwo(lowerBound + partSize * i));
+		intervals.push(floatToFixed(lowerBound + partSize * i));
 	}
 	return intervals;
 }
@@ -205,7 +205,7 @@ export function getValueRange(orderedArray) {
 }
 
 export function scale(val, yAxis) {
-	return floatTwo(yAxis.zeroLine - val * yAxis.scaleMultiplier);
+	return floatToFixed(yAxis.zeroLine - val * yAxis.scaleMultiplier);
 }
 
 export function isInRange(val, min, max) {

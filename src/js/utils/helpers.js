@@ -5,7 +5,7 @@ import { ANGLE_RATIO } from './constants';
  * @param {Number} d Any number
  * @param {Number} decimals Number of decimals
  */
-export function floatTwo(d, decimals=2) {
+export function floatToFixed(d, decimals=2) {
 	return parseFloat(d.toFixed(decimals));
 }
 

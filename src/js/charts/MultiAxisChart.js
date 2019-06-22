@@ -1,7 +1,7 @@
 import AxisChart from './AxisChart';
 import { Y_AXIS_MARGIN } from '../utils/constants';
 // import { ChartComponent } from '../objects/ChartComponents';
-import { floatTwo } from '../utils/helpers';
+import { floatToFixed } from '../utils/helpers';
 
 export default class MultiAxisChart extends AxisChart {
 	constructor(args) {
@@ -69,7 +69,7 @@ export default class MultiAxisChart extends AxisChart {
 
 	calcYUnits() {
 		this.state.datasets.map(d => {
-			d.positions = d.values.map(val => floatTwo(d.yAxis.zeroLine - val * d.yAxis.scaleMultiplier));
+			d.positions = d.values.map(val => floatToFixed(d.yAxis.zeroLine - val * d.yAxis.scaleMultiplier));
 		});
 	}
 

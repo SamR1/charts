@@ -4,7 +4,7 @@ import { AXIS_LEGEND_BAR_SIZE } from '../utils/constants';
 import { getComponent } from '../objects/ChartComponents';
 import { getOffset, fire } from '../utils/dom';
 import { calcChartIntervals, getIntervalSize, getValueRange, getZeroIndex, scale, getClosestInArray } from '../utils/intervals';
-import { floatTwo } from '../utils/helpers';
+import { floatToFixed } from '../utils/helpers';
 import { makeOverlay, updateOverlay, legendBar } from '../utils/draw';
 import { getTopOffset, getLeftOffset, MIN_BAR_PERCENT_HEIGHT, BAR_CHART_SPACE_RATIO,
 	LINE_CHART_DOT_SIZE } from '../utils/constants';
@@ -77,7 +77,7 @@ export default class AxisChart extends BaseChart {
 		s.xAxis = {
 			labels: labels,
 			positions: labels.map((d, i) =>
-				floatTwo(s.xOffset + i * s.unitWidth)
+				floatToFixed(s.xOffset + i * s.unitWidth)
 			)
 		};
 	}
