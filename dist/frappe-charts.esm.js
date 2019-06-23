@@ -2544,14 +2544,11 @@ function normalize(x) {
 }
 
 function getChartRangeIntervals(max, min=0) {
-	let upperBound = floatToFixed((Math.ceil(max) === max
-		? max + 0.1
-		: Math.ceil(max)),1
-	);
+	let upperBound = floatToFixed(max + 0.1	);
 	let lowerBound = min < 1 ? 0 : floatToFixed(min - 0.1, 1);
 	let range = floatToFixed(upperBound - lowerBound, 1);
 
-	let noOfParts = range;
+	let noOfParts = Math.ceil(range);
 	let partSize = 1;
 
 	// To avoid too many partitions
@@ -2569,6 +2566,11 @@ function getChartRangeIntervals(max, min=0) {
 	if(range <= 2) {
 		noOfParts = 4;
 		partSize = range/noOfParts;
+
+		// readjust lower if needed, to better display minor data variations
+		if (floatToFixed(lowerBound + partSize * 2) <= min) {
+			lowerBound += partSize;
+		}
 	}
 
 	// Special case: 0
@@ -2579,7 +2581,12 @@ function getChartRangeIntervals(max, min=0) {
 
 	let intervals = [];
 	for(var i = 0; i <= noOfParts; i++){
-		intervals.push(floatToFixed(lowerBound + partSize * i));
+		// readjust max intervals if needed, to better display minor data variations
+		let interval = floatToFixed(lowerBound + partSize * i);
+		intervals.push(interval);
+		if(interval > max) {
+			break;
+		}
 	}
 	return intervals;
 }
@@ -2587,9 +2594,6 @@ function getChartRangeIntervals(max, min=0) {
 function getChartIntervals(maxValue, minValue=0) {
 	let [normalMaxValue, exponent] = normalize(maxValue);
 	let normalMinValue = minValue ? minValue/Math.pow(10, exponent): 0;
-
-	// Allow only 7 significant digits
-	normalMaxValue = normalMaxValue.toFixed(6);
 
 	let intervals = getChartRangeIntervals(normalMaxValue, normalMinValue);
 	intervals = intervals.map(
