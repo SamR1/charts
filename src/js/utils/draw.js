@@ -424,7 +424,7 @@ export function yRegion(y1, y2, width, label, options={}) {
 	let height = y1 - y2;
 
 	let rect = createSVG('rect', {
-		className: `bar mini`, // remove class
+		className: `bar mini y-regions-bar`, // remove class
 		styles: {
 			fill: `rgba(228, 234, 239, 0.49)`,
 			stroke: BASE_LINE_COLOR,
