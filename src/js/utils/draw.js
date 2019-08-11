@@ -1,10 +1,11 @@
-import { getBarHeightAndYAttr } from './draw-utils';
+import { getBarHeightAndYAttr, truncateString, shortenLargeNumber } from './draw-utils';
 import { getStringWidth } from './helpers';
 import { DOT_OVERLAY_SIZE_INCR, PERCENTAGE_BAR_DEFAULT_DEPTH } from './constants';
 import { lightenDarkenColor } from './colors';
 
 export const AXIS_TICK_LENGTH = 6;
 const LABEL_MARGIN = 4;
+const LABEL_MAX_CHARS = 15;
 export const FONT_SIZE = 10;
 const BASE_LINE_COLOR = '#dadada';
 const FONT_FILL = '#555b51';
@@ -119,12 +120,36 @@ export function makeArcPathStr(startPosition, endPosition, center, radius, clock
 		${arcEndX} ${arcEndY} z`;
 }
 
-export function makeArcStrokePathStr(startPosition, endPosition, center, radius, clockWise=1){
+export function makeCircleStr(startPosition, endPosition, center, radius, clockWise=1, largeArc=0){
+	let [arcStartX, arcStartY] = [center.x + startPosition.x, center.y + startPosition.y];
+	let [arcEndX, midArc, arcEndY] = [center.x + endPosition.x, center.y * 2, center.y + endPosition.y];
+	return `M${center.x} ${center.y}
+		L${arcStartX} ${arcStartY}
+		A ${radius} ${radius} 0 ${largeArc} ${clockWise ? 1 : 0}
+		${arcEndX} ${midArc} z
+		L${arcStartX} ${midArc}
+		A ${radius} ${radius} 0 ${largeArc} ${clockWise ? 1 : 0}
+		${arcEndX} ${arcEndY} z`;
+}
+
+export function makeArcStrokePathStr(startPosition, endPosition, center, radius, clockWise=1, largeArc=0){
 	let [arcStartX, arcStartY] = [center.x + startPosition.x, center.y + startPosition.y];
 	let [arcEndX, arcEndY] = [center.x + endPosition.x, center.y + endPosition.y];
 
 	return `M${arcStartX} ${arcStartY}
-		A ${radius} ${radius} 0 0 ${clockWise ? 1 : 0}
+		A ${radius} ${radius} 0 ${largeArc} ${clockWise ? 1 : 0}
+		${arcEndX} ${arcEndY}`;
+}
+
+export function makeStrokeCircleStr(startPosition, endPosition, center, radius, clockWise=1, largeArc=0){
+	let [arcStartX, arcStartY] = [center.x + startPosition.x, center.y + startPosition.y];
+	let [arcEndX, midArc, arcEndY] = [center.x + endPosition.x, radius * 2 + arcStartY, center.y + startPosition.y];
+
+	return `M${arcStartX} ${arcStartY}
+		A ${radius} ${radius} 0 ${largeArc} ${clockWise ? 1 : 0}
+		${arcEndX} ${midArc}
+		M${arcStartX} ${midArc}
+		A ${radius} ${radius} 0 ${largeArc} ${clockWise ? 1 : 0}
 		${arcEndX} ${arcEndY}`;
 }
 
@@ -182,7 +207,9 @@ export function heatSquare(className, x, y, size, fill='none', data={}) {
 	return createSVG("rect", args);
 }
 
-export function legendBar(x, y, size, fill='none', label) {
+export function legendBar(x, y, size, fill='none', label, truncate=false) {
+	label = truncate ? truncateString(label, LABEL_MAX_CHARS) : label;
+
 	let args = {
 		className: 'legend-bar',
 		x: 0,
@@ -293,6 +320,8 @@ function makeVertLine(x, label, y1, y2, options={}) {
 function makeHoriLine(y, label, x1, x2, options={}) {
 	if(!options.stroke) options.stroke = BASE_LINE_COLOR;
 	if(!options.lineType) options.lineType = '';
+	if (options.shortenNumbers) label = shortenLargeNumber(label);
+	
 	let className = 'line-horizontal ' + options.className +
 		(options.lineType === "dashed" ? "dashed": "");
 
@@ -355,7 +384,8 @@ export function yLine(y, label, width, options={}) {
 	return makeHoriLine(y, label, x1, x2, {
 		stroke: options.stroke,
 		className: options.className,
-		lineType: options.lineType
+		lineType: options.lineType,
+		shortenNumbers: options.shortenNumbers
 	});
 }
 

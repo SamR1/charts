@@ -2,7 +2,7 @@ import AggregationChart from './AggregationChart';
 import { getComponent } from '../objects/ChartComponents';
 import { getOffset } from '../utils/dom';
 import { getPositionByAngle } from '../utils/helpers';
-import { makeArcStrokePathStr } from '../utils/draw';
+import { makeArcStrokePathStr, makeStrokeCircleStr } from '../utils/draw';
 import { lightenDarkenColor } from '../utils/colors';
 import { transform } from '../utils/animation';
 import { FULL_ANGLE } from '../utils/constants';
@@ -47,6 +47,7 @@ export default class DonutChart extends AggregationChart {
 		s.sliceTotals.map((total, i) => {
 			const startAngle = curAngle;
 			const originDiffAngle = (total / s.grandTotal) * FULL_ANGLE;
+			const largeArc = originDiffAngle > 180 ? 1: 0;
 			const diffAngle = clockWise ? -originDiffAngle : originDiffAngle;
 			const endAngle = curAngle = curAngle + diffAngle;
 			const startPosition = getPositionByAngle(startAngle, radius);
@@ -62,7 +63,10 @@ export default class DonutChart extends AggregationChart {
 				curStart = startPosition;
 				curEnd = endPosition;
 			}
-			const curPath = makeArcStrokePathStr(curStart, curEnd, this.center, this.radius, this.clockWise);
+			const curPath =
+				originDiffAngle === 360
+					? makeStrokeCircleStr(curStart, curEnd, this.center, this.radius, this.clockWise, largeArc)
+					: makeArcStrokePathStr(curStart, curEnd, this.center, this.radius, this.clockWise, largeArc);
 
 			s.sliceStrings.push(curPath);
 			s.slicesProperties.push({
