@@ -3386,7 +3386,7 @@ class AxisChart extends BaseChart {
 			let cumulative = new Array(this.state.datasetLength).fill(0);
 			this.data.datasets.map((d, i) => {
 				let values = this.data.datasets[i].values;
-				d[key] = cumulative = cumulative.map((c, i) => c + values[i]);
+				d[key] = cumulative = cumulative.map((c, i) => c + +values[i]);
 			});
 		}
 
