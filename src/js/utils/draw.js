@@ -1,4 +1,4 @@
-import { getBarHeightAndYAttr, truncateString, shortenLargeNumber } from './draw-utils';
+import { getBarHeightAndYAttr, truncateString, shortenLargeNumber, getSplineCurvePointsStr } from './draw-utils';
 import { getStringWidth } from './helpers';
 import { DOT_OVERLAY_SIZE_INCR, PERCENTAGE_BAR_DEFAULT_DEPTH } from './constants';
 import { lightenDarkenColor } from './colors';
@@ -238,7 +238,9 @@ export function legendBar(x, y, size, fill='none', label, truncate=false) {
 	return group;
 }
 
-export function legendDot(x, y, size, fill='none', label) {
+export function legendDot(x, y, size, fill='none', label, truncate=false) {
+	label = truncate ? truncateString(label, LABEL_MAX_CHARS) : label;
+
 	let args = {
 		className: 'legend-dot',
 		cx: 0,
@@ -589,6 +591,11 @@ export function getPaths(xList, yList, color, options={}, meta={}) {
 		}
 	});
 	let pointsStr = pointsList.join("L");
+
+	// Spline
+	if (options.spline)
+		pointsStr = getSplineCurvePointsStr(xList, yList);
+    
 	let path = makePath("M"+pointsStr, 'line-graph-path', color);
 
 	// HeatLine
